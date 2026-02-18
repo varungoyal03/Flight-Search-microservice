@@ -14,11 +14,12 @@ async function connectSeatReleaseQueue() {
                 try {
                     await updateSeats({ flightId, seats, dec: false });
                     console.log(`[SEAT_RELEASE] Released ${seats} seats for flightId=${flightId}`);
+                        channel.ack(data);
                 } catch (err) {
                     console.error(`[SEAT_RELEASE] Failed to release seats:`, err);
+                        channel.nack(data, false, true); // requeue the message for retry
                 }
             }
-            channel.ack(data);
         });
     } catch (error) {
         console.error('[SEAT_RELEASE_QUEUE] Error:', error);
