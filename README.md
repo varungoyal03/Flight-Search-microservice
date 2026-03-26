@@ -1,19 +1,17 @@
-Here is the combined markdown code in a single block:
 
-```markdown
 # ✈️ Flight Booking Microservices
 
 A distributed flight booking system built using a microservices architecture. It features isolated services for authentication, flight inventory, transactional bookings, and asynchronous email notifications.
 
 ## 🔗 Project Resources
-* **[📚 System Docs & Architecture (Notion)](https://flight-microservices.notion.site/)** - Contains High-Level Design (HLD), DB Diagrams, and documentation for all 4 services.
-* **[🚀 API Documentation (Postman)](https://documenter.getpostman.com/view/45885092/2sBXVig9sT#d2b2a2e1-7f6a-4102-933c-01123b8d6443)** - API routes, payloads, and mock responses.
+* [System Docs & Architecture (Notion)](https://flight-microservices.notion.site/) - Contains High-Level Design (HLD), DB Diagrams, and documentation for all 4 services.
+* [API Documentation (Postman)](https://documenter.getpostman.com/view/45885092/2sBXVig9sT#d2b2a2e1-7f6a-4102-933c-01123b8d6443) - API routes, payloads, and mock responses.
 
 ## 📦 Microservices Repositories
-1. **[Auth & API Gateway Service](https://github.com/varungoyal03/flight-auth-microservice)**
-2. **[Flight Search Service](https://github.com/varungoyal03/Flight-Search-microservice)** *(This Repository)*
-3. **[Booking Service](https://github.com/varungoyal03/flight-booking-microservice)**
-4. **[Notification Service](https://github.com/varungoyal03/Flight-Notification-service)**
+1. [Auth & API Gateway Service](https://github.com/varungoyal03/flight-auth-microservice)
+2. [Flight Search Service](https://github.com/varungoyal03/Flight-Search-microservice) *(This Repository)*
+3. [Booking Service](https://github.com/varungoyal03/flight-booking-microservice)
+4. [Notification Service](https://github.com/varungoyal03/Flight-Notification-service)
 
 ---
 
@@ -45,31 +43,25 @@ Each microservice follows the same standard setup process. To run any of the ser
 ```bash
 git clone <repository_url>
 cd <repository_folder>
-```
+2. Install dependencies:
 
-**2. Install dependencies:**
-```bash
+Bash
 npm install
-```
+3. Configure Environment Variables:
+Create a .env file in the root directory. To run the base server, it only requires the port:
 
-**3. Configure Environment Variables:**
-Create a `.env` file in the root directory. To run the base server, it only requires the port:
-```env
+Code snippet
 PORT=3000
-```
+4. Database Setup (Sequelize ORM):
+Ensure your local MySQL server is running and your database credentials are updated in src/config/config.json. Then, initialize the database:
 
-**4. Database Setup (Sequelize ORM):**
-Ensure your local MySQL server is running and your database credentials are updated in `src/config/config.json`. Then, initialize the database:
-```bash
+Bash
 cd src
 npx sequelize db:create
 npx sequelize db:migrate
 npx sequelize db:seed:all
 cd ..
-```
+5. Start the Development Server:
 
-**5. Start the Development Server:**
-```bash
+Bash
 npm run dev
-```
-```
