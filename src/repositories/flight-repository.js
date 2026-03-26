@@ -126,47 +126,81 @@ class FlightRepository extends CrudRepository {
 
 
 
-    async updateRemainingSeats(flightId, seats, dec = true) {//dec pass as 1 for decrement and 0 for increment
+//     async updateRemainingSeats(flightId, seats, dec = true) {//dec pass as 1 for decrement and 0 for increment
 
          
-        const transaction = await db.sequelize.transaction();
+//         const transaction = await db.sequelize.transaction();
     
      
-        try {
+//         try {
         
           
-  const flight = await Flight.findByPk(flightId, { transaction: transaction });
+//   const flight = await Flight.findByPk(flightId, { transaction: transaction });
         
-        if (!flight) {
-            throw new Error('Flight not found');
-        }
+//         if (!flight) {
+//             throw new Error('Flight not found');
+//         }
 
-        // 🔴 CRITICAL CHECK
-        if (+dec && flight.totalSeats < seats) {
-            throw new Error('Not enough seats available');
-        }
+//         // 🔴 CRITICAL CHECK
+//         if (+dec && flight.totalSeats < seats) {
+//             throw new Error('Not enough seats available');
+//         }
 
-        if (+dec) {
+//         if (+dec) {
          
-            await flight.decrement('totalSeats', { by: seats, transaction });
+//             await flight.decrement('totalSeats', { by: seats, transaction });
          
-        } else {
-            await flight.increment('totalSeats', { by: seats, transaction });
-        }
+//         } else {
+//             await flight.increment('totalSeats', { by: seats, transaction });
+//         }
 
 
       
 
-            await transaction.commit();
+//             await transaction.commit();
            
-            return flight;
-        } catch(error) {
-            await transaction.rollback();
-            throw error;
-        }
+//             return flight;
+//         } catch(error) {
+//             await transaction.rollback();
+//             throw error;
+//         }
        
+//     }
+
+    async updateRemainingSeats(flightId, seats, dec = true) {
+    const transaction = await db.sequelize.transaction();
+    try {
+        const flight = await Flight.findByPk(flightId, {
+            transaction,
+            lock: transaction.LOCK.UPDATE
+        });
+
+        if (!flight) {
+            throw new Error('Flight not found');
+        }
+
+        // 🔒 Prevent overselling (CRITICAL)
+        if (dec && flight.totalSeats < seats) {
+            throw new Error('Not enough seats available');
+        }
+
+        if (dec) {
+            await flight.decrement('totalSeats', { by: seats, transaction });
+        } else {
+            await flight.increment('totalSeats', { by: seats, transaction });
+        }
+
+        await transaction.commit();
+        return flight;
+    } catch (error) {
+        await transaction.rollback();
+        throw error;
     }
 }
+}
+
+
+
 
 
 module.exports = FlightRepository;
