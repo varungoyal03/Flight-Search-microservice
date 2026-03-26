@@ -1,48 +1,67 @@
-This is a base node js project template, which anyone can use as it has been prepared, by keeping some of the most important code principles and project management recommendations. Feel free to change anything. 
 
+# ✈️ Flight Booking Microservices
 
-`src` -> Inside the src folder all the actual source code regarding the project will reside, this will not include any kind of tests. (You might want to make separate tests folder)
+A distributed flight booking system built using a microservices architecture. It features isolated services for authentication, flight inventory, transactional bookings, and asynchronous email notifications.
 
-Lets take a look inside the `src` folder
+## 🔗 Project Resources
+* [System Docs & Architecture (Notion)](https://flight-microservices.notion.site/) - Contains High-Level Design (HLD), DB Diagrams, and documentation for all 4 services.
+* [API Documentation (Postman)](https://documenter.getpostman.com/view/45885092/2sBXVig9sT#d2b2a2e1-7f6a-4102-933c-01123b8d6443) - API routes, payloads, and mock responses.
 
- - `config` -> In this folder anything and everything regarding any configurations or setup of a library or module will be done. For example: setting up `dotenv` so that we can use the environment variables anywhere in a cleaner fashion, this is done in the `server-config.js`. One more example can be to setup you logging library that can help you to prepare meaningful logs, so configuration for this library should also be done here. 
+## 📦 Microservices Repositories
+1. [Auth & API Gateway Service](https://github.com/varungoyal03/flight-auth-microservice)
+2. [Flight Search Service](https://github.com/varungoyal03/Flight-Search-microservice) *(This Repository)*
+3. [Booking Service](https://github.com/varungoyal03/flight-booking-microservice)
+4. [Notification Service](https://github.com/varungoyal03/Flight-Notification-service)
 
- - `routes` -> In the routes folder, we register a route and the corresponding middleware and controllers to it. 
+---
 
- - `middlewares` -> they are just going to intercept the incoming requests where we can write our validators, authenticators etc. 
+## 🏗️ Services Overview
+1. **Auth & API Gateway:** Centralized entry point, rate limiting, and JWT authentication.
+2. **Flight Search Service:** Manages airplanes, airports, and flight inventory with O(1) seat lookups.
+3. **Booking Service:** Orchestrates distributed transactions (Saga pattern) and cron-based seat releases.
+4. **Notification Service:** Asynchronously consumes RabbitMQ queues to dispatch user emails.
 
- - `controllers` -> they are kind of the last middlewares as post them you call you business layer to execute the budiness logic. In controllers we just receive the incoming requests and data and then pass it to the business layer, and once business layer returns an output, we structure the API response in controllers and send the output. 
+---
 
- - `repositories` -> this folder contains all the logic using which we interact the DB by writing queries, all the raw queries or ORM queries will go here.
+## 📂 Folder Structure (`src/`)
+This project strictly follows the Controller-Service-Repository pattern:
+* `config/`: Setup for environment variables (`dotenv`), loggers (`winston`), and message queues.
+* `routes/`: API endpoint registrations.
+* `middlewares/`: Request interceptors, authenticators, and payload validators.
+* `controllers/`: Receives requests, passes data to services, and formats standard API responses.
+* `services/`: Core business logic and external service integrations.
+* `repositories/`: Database interaction layer using Sequelize ORM.
+* `utils/`: Reusable helpers, standard response objects, and custom error classes.
 
- - `services` -> contains the buiness logic and interacts with repositories for data from the database
+---
 
- - `utils` -> contains helper methods, error classes etc.
+## 🛠️ Local Setup Instructions
 
-### Setup the project
+Each microservice follows the same standard setup process. To run any of the services locally:
 
- - Download this template from github and open it in your favourite text editor. 
- - Go inside the folder path and execute the following command:
-  ```
-  npm install
-  ```
- - In the root directory create a `.env` file and add the following env variables
-    ```
-        PORT=<port number of your choice>
-    ```
-    ex: 
-    ```
-        PORT=3000
-    ```
- - go inside the `src` folder and execute the following command:
-    ```
-      npx sequelize init
-    ```
- - By executing the above command you will get migrations and seeders folder along with a config.json inside the config folder. 
- - If you're setting up your development environment, then write the username of your db, password of your db and in dialect mention whatever db you are using for ex: mysql, mariadb etc
- - If you're setting up test or prod environment, make sure you also replace the host with the hosted db url.
+**1. Clone the repository:**
+```bash
+git clone <repository_url>
+cd <repository_folder>
+2. Install dependencies:
 
- - To run the server execute
- ```
- npm run dev
- ```
+Bash
+npm install
+3. Configure Environment Variables:
+Create a .env file in the root directory. To run the base server, it only requires the port:
+
+Code snippet
+PORT=3000
+4. Database Setup (Sequelize ORM):
+Ensure your local MySQL server is running and your database credentials are updated in src/config/config.json. Then, initialize the database:
+
+Bash
+cd src
+npx sequelize db:create
+npx sequelize db:migrate
+npx sequelize db:seed:all
+cd ..
+5. Start the Development Server:
+
+Bash
+npm run dev
